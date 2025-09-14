@@ -86,6 +86,50 @@
       echo '<div class="updated"><p>Imported: '.esc_html($imported).' | Updated: '.esc_html($updated).'</p></div>';
     }
 
+    function importProduct($product) {
+      $existingId = $this->getProductByFakestoreId($product->id);
+
+      $postData = array(
+        'post_title'   => sanitize_text_field($product->title),
+        'post_content' => sanitize_textarea_field($product->description),
+        'post_status'  => 'publish',
+        'post_type'    => 'product',
+      );
+
+      if ($existingId) {
+        $postData['ID'] = $existingId;
+        $productId = wp_update_post($postData);
+        $status = 'updated';
+      } else {
+        $productId = wp_insert_post($postData);
+        update_post_meta($productId, '_fakestore_id', $product->id);
+        $status = 'imported';
+      }
+
+      if ($productId) {
+        update_post_meta($productId, '_regular_price', $product->price);
+        update_post_meta($productId, '_price', $product->price);
+
+        if (!empty($product->image)) {
+          $this->setProductImage($productId, $product->image);
+        }
+      }
+
+      return $status;
+    }
+
+    function getProductByFakestoreId($fakestoreId) {
+      $args = array(
+        'post_type'  => 'product',
+        'meta_key'   => '_fakestore_id',
+        'meta_value' => $fakestoreId,
+        'fields'     => 'ids',
+        'posts_per_page' => 1
+      );
+      
+      $query = new WP_Query($args);
+      return $query->have_posts() ? $query->posts[0] : false;
+    }
 
     function pageHTML() { ?>
       <div class="wrap">
