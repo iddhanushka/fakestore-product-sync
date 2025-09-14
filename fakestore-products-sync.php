@@ -14,6 +14,22 @@
       add_action('admin_init', array($this, 'settings'));
     }
 
+    public static function activate() {
+      if ( get_option('fsp_api_url') === false ) {
+        update_option('fsp_api_url', 'https://fakestoreapi.com/products');
+      }
+      update_option('fsp_last_sync', '');
+      update_option('fsp_last_imported', 0);
+      update_option('fsp_last_updated', 0);
+    }
+
+    public static function deactivate() {
+      delete_option('fsp_api_url');
+      delete_option('fsp_last_sync');
+      delete_option('fsp_last_imported');
+      delete_option('fsp_last_updated');
+    }
+
     function settings() {
       add_settings_section('fsp_first_section', null, null, 'fakestore-settings-page');
       add_settings_field('fsp_api_url', 'API Base URL', array($this, 'apiHTML'), 'fakestore-settings-page', 'fsp_first_section');
@@ -52,4 +68,9 @@
   }
 
   $fakestoreProductSyncPlugin = new FakestoreProductSyncPlugin;
+
+  // Register activation and deactivation hooks
+  register_activation_hook(__FILE__, array('FakestoreProductSyncPlugin', 'activate'));
+  register_deactivation_hook(__FILE__, array('FakestoreProductSyncPlugin', 'deactivate'));
+
 ?>
