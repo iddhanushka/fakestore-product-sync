@@ -131,6 +131,14 @@
       return $query->have_posts() ? $query->posts[0] : false;
     }
 
+    function setProductImage($productId, $imageUrl) {
+      require_once ABSPATH . 'wp-admin/includes/image.php';
+      require_once ABSPATH . 'wp-admin/includes/file.php';
+      require_once ABSPATH . 'wp-admin/includes/media.php';
+
+      media_sideload_image(esc_url_raw($imageUrl), $productId);
+    }
+
     function pageHTML() { ?>
       <div class="wrap">
         <h1>Fakestore Settings</h1>
