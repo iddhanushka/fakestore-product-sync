@@ -64,6 +64,19 @@
             submit_button(); 
           ?>
         </form>
+
+        <h2>Sync Products</h2>
+        <form method="post">
+          <?php wp_nonce_field('fsp_sync_action', 'fsp_sync_nonce'); ?>
+          <input type="submit" name="fsp_sync_now" class="button button-primary" value="Sync Now">
+        </form>
+
+        <?php
+          if (isset($_POST['fsp_sync_now']) && check_admin_referer('fsp_sync_action', 'fsp_sync_nonce')) {
+            $this->runSync();
+          }
+        ?>
+
       </div>
     <?php }
   }
