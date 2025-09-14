@@ -54,6 +54,39 @@
       add_options_page('Fakestore Settings', 'Fakestore', 'manage_options', 'fakestore-settings-page', array($this, 'pageHTML'));
     }
 
+    // sync logic with product import
+    function runSync() {
+      $apiUrl = get_option('fsp_api_url', 'https://fakestoreapi.com/products');
+      $response = wp_remote_get($apiUrl);
+
+      if (is_wp_error($response)) {
+        echo '<div class="error"><p>API request failed.</p></div>';
+        return;
+      }
+
+      $products = json_decode(wp_remote_retrieve_body($response));
+      if (empty($products)) {
+        echo '<div class="error"><p>No products returned from API.</p></div>';
+        return;
+      }
+
+      $imported = 0;
+      $updated  = 0;
+
+      foreach ($products as $product) {
+        $result = $this->importProduct($product);
+        if ($result === 'imported') $imported++;
+        if ($result === 'updated') $updated++;
+      }
+
+      update_option('fsp_last_sync', current_time('mysql'));
+      update_option('fsp_last_imported', $imported);
+      update_option('fsp_last_updated', $updated);
+
+      echo '<div class="updated"><p>Imported: '.esc_html($imported).' | Updated: '.esc_html($updated).'</p></div>';
+    }
+
+
     function pageHTML() { ?>
       <div class="wrap">
         <h1>Fakestore Settings</h1>
