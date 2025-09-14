@@ -4,6 +4,7 @@
     Description: Sync products from FakeStore API into WooCommerce.
     Version: 1.0
     Author: Dhanushka Iddamaldeniya
+    Requires Plugins: woocommerce
   */
 
   if ( ! defined( 'ABSPATH' ) ) exit;
