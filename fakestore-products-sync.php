@@ -162,6 +162,13 @@
           }
         ?>
 
+        <h2>Last Sync Status</h2>
+        <ul>
+          <li><strong>Last Sync:</strong> <?php echo esc_html(get_option('fsp_last_sync', 'Never')); ?></li>
+          <li><strong>Imported:</strong> <?php echo esc_html(get_option('fsp_last_imported', 0)); ?></li>
+          <li><strong>Updated:</strong> <?php echo esc_html(get_option('fsp_last_updated', 0)); ?></li>
+        </ul>
+
       </div>
     <?php }
   }
