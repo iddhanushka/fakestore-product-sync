@@ -60,9 +60,7 @@ Click Save Changes.
 
 Use the Sync Now button to import products.
 
-Last sync details will appear at the bottom of the settings page
-
-Please make sure to update tests as appropriate.
+Last sync details will appear at the bottom of the settings page.
 
 ## Security
 
